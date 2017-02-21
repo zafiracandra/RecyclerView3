@@ -1,4 +1,5 @@
 package id.sch.smktelkom_mlg.learn.recyclerview3;
+
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -21,8 +22,10 @@ import id.sch.smktelkom_mlg.learn.recyclerview3.model.Hotel;
 public class MainActivity extends AppCompatActivity implements HotelAdapter.IHotelAdapter {
     public static final String HOTEL = "hotel";
     public static final int REQUEST_CODE_ADD = 88;
+    public static final int REQUEST_CODE_EDIT = 99;
     ArrayList<Hotel> mlist = new ArrayList<>();
     HotelAdapter mAdapter;
+    int itemPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,11 @@ public class MainActivity extends AppCompatActivity implements HotelAdapter.IHot
         if (requestCode == REQUEST_CODE_ADD && resultCode == RESULT_OK) {
             Hotel hotel = (Hotel) data.getSerializableExtra(HOTEL);
             mlist.add(hotel);
+            mAdapter.notifyDataSetChanged();
+        } else if (requestCode == REQUEST_CODE_EDIT && resultCode == RESULT_OK) {
+            Hotel hotel = (Hotel) data.getSerializableExtra(HOTEL);
+            mlist.remove(itemPos);
+            mlist.add(itemPos, hotel);
             mAdapter.notifyDataSetChanged();
         }
     }
@@ -112,5 +120,28 @@ public class MainActivity extends AppCompatActivity implements HotelAdapter.IHot
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(HOTEL, mlist.get(pos));
         startActivity(intent);
+    }
+
+    @Override
+    public void doEdit(int Pos) {
+        itemPos = Pos;
+        Intent intent = new Intent(this, InputActivity.class);
+        intent.putExtra(HOTEL, mlist.get(Pos));
+        startActivityForResult(intent, REQUEST_CODE_EDIT);
+    }
+
+    @Override
+    public void doDelete(int Pos) {
+
+    }
+
+    @Override
+    public void doFav(int Pos) {
+
+    }
+
+    @Override
+    public void doShare(int Pos) {
+
     }
 }
